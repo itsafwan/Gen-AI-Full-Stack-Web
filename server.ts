@@ -11,7 +11,7 @@ import envConfig from "./src/config/dotenv.config.js";
 
 ConnectionDB().then(() => {
   app.listen(envConfig.PORT, () => {
-    console.log(`Server is running on port ${envConfig.PORT}`);
+    console.log(`Server is running on http://localhost:${envConfig.PORT}`);
   });
 })
 .catch((error) => {

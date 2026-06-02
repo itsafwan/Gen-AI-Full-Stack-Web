@@ -9,8 +9,15 @@ const authRouter = Router();
    * @description Authorization and authentication related routes for user registration, login, password reset, etc.
    * @access Public
 */
-
 authRouter.post("/register", authController.registerUser);
+
+/**
+   * @routes POST /api/v1/auth/login
+   * @description Handles user login logic, including credential verification and JWT token generation
+   * @access Public
+*/
+authRouter.post("/login", authController.loginUser);
+
 
 
 
