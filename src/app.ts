@@ -1,6 +1,12 @@
 import express, { type Application } from "express";
 import authRouter from "./routes/auth.routes.js";
 
+/**
+   * @name App Initialization
+   * @description Sets up the Express application, including middleware for JSON parsing and routing for authentication-related endpoints. This is the main entry point for the server, where all routes and middleware are configured.
+   * @access Public
+*/
+
 const app: Application = express();
 
 app.use(express.json());

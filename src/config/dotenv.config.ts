@@ -1,5 +1,11 @@
 import {  configDotenv } from "dotenv";
 
+/**
+   * @name Dotenv Configuration
+   * @description Loads environment variables from a .env file into process.env, ensuring that required variables like PORT and MONGO_URI are defined. If any required variable is missing, it throws an error to prevent the application from running with incomplete configuration. This setup is essential for managing sensitive information and configuration settings in a secure and flexible manner.
+   * @access Public
+*/
+
 configDotenv();
 
 const requiredEnvVariables =[

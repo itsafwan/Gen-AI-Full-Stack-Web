@@ -1,5 +1,11 @@
 import mongoose from "mongoose";
 
+/**
+   * @name User Model
+   * @description Mongoose schema and model for user data, including fields for username, email, and password. This model will be used for user registration, authentication, and management in the application.
+   * @access Public
+*/
+
 const userSchema = new mongoose.Schema({
   username: {
     type: String,
