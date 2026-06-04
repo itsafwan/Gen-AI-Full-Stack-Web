@@ -11,7 +11,10 @@ configDotenv();
 const requiredEnvVariables =[
   "PORT",
   "MONGO_URI",
-  "JWT_SECRET"
+  "JWT_SECRET",
+  "REFRESH_TOKEN_SECRET",
+  "ACCESS_TOKEN_SECRET"
+
 ];
 
 requiredEnvVariables.forEach((variableName)=>{
@@ -24,6 +27,8 @@ const envConfig = {
   PORT: process.env.PORT || 5000,
   MONGO_URI: process.env.MONGO_URI || "",
   JWT_SECRET: process.env.JWT_SECRET || "",
+  REFRESH_TOKEN_SECRET: process.env.REFRESH_TOKEN_SECRET || "",
+  ACCESS_TOKEN_SECRET: process.env.ACCESS_TOKEN_SECRET || "",
 }
 
 export default envConfig;
