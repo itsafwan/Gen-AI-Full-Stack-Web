@@ -39,32 +39,35 @@ export const registerUser = async (req: Request, res: Response) => {
     });
 
    // save the new user to the database    
-
     await newUser.save();
 
-   // Generate a JWT token for the newly registered user
-    const token = jwt.sign({ 
-      id: newUser._id, 
-      username: newUser.username 
-   },
-   envConfig.JWT_SECRET,
-   { expiresIn: "1d" }
-  );
+  // 1. Generate short-lived Access Token (15 mins)
+    const accessToken = jwt.sign(
+      { id: newUser._id, username: newUser.username },
+      envConfig.ACCESS_TOKEN_SECRET,
+      { expiresIn: "15m" }
+    );
 
-  // Set the token in an HTTP-only cookie for authentication
+    // 2. Generate long-lived Refresh Token (7 days)
+    const refreshToken = jwt.sign(
+      { id: newUser._id },
+      envConfig.REFRESH_TOKEN_SECRET,
+      { expiresIn: "7d" }
+    );
 
-  res.cookie("token",token ,{
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "strict",
-    maxAge: 24 * 60 * 60 * 1000, 
-  });
+    // 3. Set Refresh Token in HTTP-only cookie
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 Days
+    });
   
-  // Respond with success message and user details (excluding password)
-
-  return res.status(201).json({
-   success:true,
+  /// 4. Return success response with Access Token in body
+    return res.status(201).json({
+      success: true,
       message: "User registered successfully",
+      accessToken, 
       user: {
         id: newUser._id,
         username: newUser.username,
@@ -111,26 +114,33 @@ export const loginUser = async (req: Request, res: Response) => {
             message:"Invaild email or password"
          })
       };
-      // Generate a JWT token for the authenticated user
-      const token = jwt.sign({ 
-         id: user._id, 
-         username: user.username 
-      },
-      envConfig.JWT_SECRET,
-      { expiresIn: "1d" }
-     );
+      // 1. Generate short-lived Access Token (15 mins)
+    const accessToken = jwt.sign(
+      { id: user._id, username: user.username },
+      envConfig.ACCESS_TOKEN_SECRET,
+      { expiresIn: "15m" }
+    );
 
-   // Set the token in an HTTP-only cookie for authentication
-   res.cookie("token",token ,{
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "strict",
-    maxAge: 24 * 60 * 60 * 1000, 
-  });
+    // 2. Generate long-lived Refresh Token (7 days)
+    const refreshToken = jwt.sign(
+      { id: user._id },
+      envConfig.REFRESH_TOKEN_SECRET,
+      { expiresIn: "7d" }
+    );
 
-   return res.status(201).json({
-   success:true, 
+   // 3. Set Refresh Token in HTTP-only cookie
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 Days
+    });
+
+   // 4. Return success response with Access Token in body (Status 200 is standard for Login)
+    return res.status(200).json({
+      success: true,
       message: "User logged in successfully",
+      accessToken, 
       user: {
         id: user._id,
         username: user.username,
@@ -140,7 +150,7 @@ export const loginUser = async (req: Request, res: Response) => {
 
    } catch(error){
    // Handle any errors that occur during the registration process
-    console.error("Error registering user:", error);
+    console.error("Error logging in user:", error);
     return res.status(500).json({ message: "Server error" });
    }
 
