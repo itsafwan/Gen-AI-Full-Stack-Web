@@ -41,14 +41,14 @@ export const registerUser = async (req: Request, res: Response) => {
    // save the new user to the database    
     await newUser.save();
 
-  // 1. Generate short-lived Access Token (15 mins)
+  // 1. Generate short-lived Access Token 
     const accessToken = jwt.sign(
       { id: newUser._id, username: newUser.username },
       envConfig.ACCESS_TOKEN_SECRET,
       { expiresIn: "15m" }
     );
 
-    // 2. Generate long-lived Refresh Token (7 days)
+    // 2. Generate long-lived Refresh Token 
     const refreshToken = jwt.sign(
       { id: newUser._id },
       envConfig.REFRESH_TOKEN_SECRET,
@@ -114,14 +114,14 @@ export const loginUser = async (req: Request, res: Response) => {
             message:"Invaild email or password"
          })
       };
-      // 1. Generate short-lived Access Token (15 mins)
+      // 1. Generate short-lived Access Token 
     const accessToken = jwt.sign(
       { id: user._id, username: user.username },
       envConfig.ACCESS_TOKEN_SECRET,
       { expiresIn: "15m" }
     );
 
-    // 2. Generate long-lived Refresh Token (7 days)
+    // 2. Generate long-lived Refresh Token 
     const refreshToken = jwt.sign(
       { id: user._id },
       envConfig.REFRESH_TOKEN_SECRET,
@@ -136,7 +136,7 @@ export const loginUser = async (req: Request, res: Response) => {
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 Days
     });
 
-   // 4. Return success response with Access Token in body (Status 200 is standard for Login)
+   // 4. Return success response with Access Token in body 
     return res.status(200).json({
       success: true,
       message: "User logged in successfully",
@@ -153,5 +153,10 @@ export const loginUser = async (req: Request, res: Response) => {
     console.error("Error logging in user:", error);
     return res.status(500).json({ message: "Server error" });
    }
+
+}
+
+
+export const logout = async (req: Request, res: Response) => {
 
 }
