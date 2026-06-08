@@ -157,6 +157,3 @@ export const loginUser = async (req: Request, res: Response) => {
 }
 
 
-export const logout = async (req: Request, res: Response) => {
-
-}
