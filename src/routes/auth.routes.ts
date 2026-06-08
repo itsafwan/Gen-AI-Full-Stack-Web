@@ -18,6 +18,12 @@ authRouter.post("/register", authController.registerUser);
 */
 authRouter.post("/login", authController.loginUser);
 
+/**
+   * @routes POST /api/v1/auth/logout
+   * @description Handles user logout logic, including token invalidation and cookie clearing
+   * @access Public
+*/
+authRouter.post("/logout", authController.logoutUser);
 
 
 

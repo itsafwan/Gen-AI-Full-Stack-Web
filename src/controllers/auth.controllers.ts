@@ -3,6 +3,7 @@ import Usermodel from "../models/user.model.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import envConfig from "../config/dotenv.config.js";
+// import redisclient from "../utils/redisClient.js"; for docker practice only, uncomment if you have redis running locally or in docker
 
 /**
    * @name registerUser
@@ -157,3 +158,38 @@ export const loginUser = async (req: Request, res: Response) => {
 }
 
 
+
+
+// export const logoutUser = async (req: Request, res: Response) => {
+//     // 1. Refresh Token cookie se nikal kar delete karo
+//     res.clearCookie('refreshToken', {
+//         httpOnly: true,
+//         secure: true, 
+//         sameSite: 'strict'
+//     });
+
+//     // 2. Authorization header se Access Token lo
+//     const authHeader = req.headers.authorization;
+    
+//     // Yahan hum check kar rahe hain ke authHeader exist karta hai
+//     if (authHeader && authHeader.startsWith('Bearer ')) {
+//         const token = authHeader.split(' ')[1];
+
+//         // Yahan `token!` lagane se TypeScript maan jayega ke yeh undefined nahi hai
+//         if (token) {
+//             await redisclient.set(token, 'blacklisted', { EX: 3600 });
+//         }
+//     }
+
+//     res.status(200).json({ message: "Logout successful!" });
+// }; for docker practice only, uncomment if you have redis running locally or in docker
+
+/**
+   * @name logoutUser
+   * @description Handles user logout logic
+   * @access Public
+   */
+
+export const logoutUser = async (req: Request, res: Response) => {
+
+}

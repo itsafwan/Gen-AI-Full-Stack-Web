@@ -1,6 +1,7 @@
 import app from "./src/app.js";
 import ConnectionDB from "./src/config/config.db.js";
 import envConfig from "./src/config/dotenv.config.js";
+// import redisclient from "./src/utils/redisClient.js"; for docker practice only, uncomment if you have redis running locally or in docker
 
 /**
    * @name Server Initialization
@@ -9,7 +10,10 @@ import envConfig from "./src/config/dotenv.config.js";
 */
 
 
-ConnectionDB().then(() => {
+
+
+ConnectionDB().then(async () => {
+  // await redisclient.connect(); // for docker practice only, uncomment if you have redis running locally or in docker
   app.listen(envConfig.PORT, () => {
     console.log(`Server is running on http://localhost:${envConfig.PORT}`);
   });
