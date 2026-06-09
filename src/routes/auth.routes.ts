@@ -1,5 +1,6 @@
 import { Router } from "express";
 import * as authController from "../controllers/auth.controllers.js";
+import { authUser } from "../middlewares/auth.middleware.js";
 
 
 const authRouter = Router();
@@ -31,7 +32,7 @@ authRouter.post("/logout", authController.logoutUser);
    * @access private
 */
 
-authRouter.get("/get-user", authController.Getuser);
+authRouter.get("/get-user", authUser,authController.Getuser);
 
 
 

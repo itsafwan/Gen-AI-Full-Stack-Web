@@ -47,7 +47,7 @@ export const registerUser = async (req: Request, res: Response) => {
     const accessToken = jwt.sign(
       { id: newUser._id, username: newUser.username },
       envConfig.ACCESS_TOKEN_SECRET,
-      { expiresIn: "15m" }
+      { expiresIn: "1d" }
     );
 
     // 2. Generate long-lived Refresh Token 
@@ -120,7 +120,7 @@ export const loginUser = async (req: Request, res: Response) => {
     const accessToken = jwt.sign(
       { id: user._id, username: user.username },
       envConfig.ACCESS_TOKEN_SECRET,
-      { expiresIn: "15m" }
+      { expiresIn: "1d" }
     );
 
     // 2. Generate long-lived Refresh Token 
@@ -191,7 +191,7 @@ export const loginUser = async (req: Request, res: Response) => {
 export const logoutUser = async (req: Request, res: Response) => {
 
   const refreshToken = req.cookies.refreshToken;
-  const accessToken = req.headers.authorization?.split(" ")[1]; // Bearer <token>
+  const accessToken = req.headers.authorization?.split(" ")[1]; 
 
   if (!refreshToken) {
     return res.status(400).json({ message: "No refresh token provided" });
@@ -223,10 +223,33 @@ export const logoutUser = async (req: Request, res: Response) => {
 
 /**
    * @name Getuser
-   * @description Handles user validation logic for protected routes. This route is used to retrieve the current user's information based on the provided access token. It verifies the access token, checks if it's blacklisted, and returns the user's details if the token is valid. If the token is invalid or blacklisted, it returns an appropriate error response.
+   * @description Handles user logic with auth middleware, 
    * @access private
    */
 
 export const Getuser = async (req: Request, res: Response) => {
+  try {
+    const userId = req.userId;  
 
-}
+    if (!userId) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+
+    const user = await Usermodel.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.status(200).json({
+      message: "User details fetched successfully",
+      user: {
+        id: user._id,
+        username: user.username,
+        email: user.email,
+      },
+    });
+  } catch (err) {
+    return res.status(500).json({ message: "Server error" });
+  }
+};

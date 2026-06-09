@@ -1,6 +1,6 @@
 import app from "./src/app.js";
-import ConnectionDB from "./src/config/config.db.js";
 import envConfig from "./src/config/dotenv.config.js";
+import ConnectionDB from "./src/config/config.db.js";
 // import redisclient from "./src/utils/redisClient.js"; for docker practice only, uncomment if you have redis running locally or in docker
 
 /**
