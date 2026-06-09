@@ -1,5 +1,6 @@
 import express, { type Application } from "express";
 import authRouter from "./routes/auth.routes.js";
+import cookieParser from "cookie-parser";
 
 /**
    * @name App Initialization
@@ -10,6 +11,8 @@ import authRouter from "./routes/auth.routes.js";
 const app: Application = express();
 
 app.use(express.json());
+app.use(cookieParser());
+
 // using auth routes for authentication related endpoints
 app.use('/api/v1/auth',authRouter);
 

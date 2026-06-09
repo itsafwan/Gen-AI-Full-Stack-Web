@@ -3,6 +3,7 @@ import Usermodel from "../models/user.model.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import envConfig from "../config/dotenv.config.js";
+import TokenBlacklistModel from "../models/tokenblacklist.model.js";
 // import redisclient from "../utils/redisClient.js"; for docker practice only, uncomment if you have redis running locally or in docker
 
 /**
@@ -157,9 +158,6 @@ export const loginUser = async (req: Request, res: Response) => {
 
 }
 
-
-
-
 // export const logoutUser = async (req: Request, res: Response) => {
 //     // 1. Refresh Token cookie se nikal kar delete karo
 //     res.clearCookie('refreshToken', {
@@ -191,5 +189,44 @@ export const loginUser = async (req: Request, res: Response) => {
    */
 
 export const logoutUser = async (req: Request, res: Response) => {
+
+  const refreshToken = req.cookies.refreshToken;
+  const accessToken = req.headers.authorization?.split(" ")[1]; // Bearer <token>
+
+  if (!refreshToken) {
+    return res.status(400).json({ message: "No refresh token provided" });
+  }
+
+  try {
+    
+    await TokenBlacklistModel.create({ token: refreshToken });
+
+   
+    if (accessToken) {
+      await TokenBlacklistModel.create({ token: accessToken });
+    }
+
+    
+    res.clearCookie("refreshToken", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+    });
+
+    return res.status(200).json({ message: "Logout successful!" });
+
+  } catch (error) {
+    console.error("Error logging out user:", error);
+    return res.status(500).json({ message: "Server error" });
+  }
+};
+
+/**
+   * @name Getuser
+   * @description Handles user validation logic for protected routes. This route is used to retrieve the current user's information based on the provided access token. It verifies the access token, checks if it's blacklisted, and returns the user's details if the token is valid. If the token is invalid or blacklisted, it returns an appropriate error response.
+   * @access private
+   */
+
+export const Getuser = async (req: Request, res: Response) => {
 
 }

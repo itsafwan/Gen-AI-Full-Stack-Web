@@ -25,6 +25,14 @@ authRouter.post("/login", authController.loginUser);
 */
 authRouter.post("/logout", authController.logoutUser);
 
+/**
+   * @routes Get /api/v1/auth/get-user
+   * @description  Handles user logout logic, including token invalidation and cookie clearing. This route is used to retrieve the current user's information based on the provided access token. It verifies the access token, checks if it's blacklisted, and returns the user's details if the token is valid. If the token is invalid or blacklisted, it returns an appropriate error response.
+   * @access private
+*/
+
+authRouter.get("/get-user", authController.Getuser);
+
 
 
 export default authRouter;

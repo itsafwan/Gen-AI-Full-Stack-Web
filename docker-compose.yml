@@ -3,4 +3,6 @@
 #     image: redis:alpine        
 #     container_name: my-redis-db   
 #     ports:
-#       - "6379:6379"   for docker practice only, uncomment if you have redis running locally or in docker
+#       - "6379:6379"   
+      #  volumes:
+      # - redis_data:/data  for docker practice only, uncomment if you have redis running locally or in docker
