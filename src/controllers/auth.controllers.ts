@@ -47,7 +47,7 @@ export const registerUser = async (req: Request, res: Response) => {
     const accessToken = jwt.sign(
       { id: newUser._id, username: newUser.username },
       envConfig.ACCESS_TOKEN_SECRET,
-      { expiresIn: "1d" }
+      { expiresIn: "15m" }
     );
 
     // 2. Generate long-lived Refresh Token 
@@ -120,7 +120,7 @@ export const loginUser = async (req: Request, res: Response) => {
     const accessToken = jwt.sign(
       { id: user._id, username: user.username },
       envConfig.ACCESS_TOKEN_SECRET,
-      { expiresIn: "1d" }
+      { expiresIn: "15m" }
     );
 
     // 2. Generate long-lived Refresh Token 
