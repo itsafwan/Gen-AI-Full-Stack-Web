@@ -12,7 +12,7 @@ import axios from "axios"
   This service handles the registration of new users by sending their data to the backend API.
   It uses Axios to make HTTP POST requests to the registration endpoint. */}
 
-interface RegisterData {
+interface ApiData {
   username: string;
   email: string;
   password: string;
@@ -20,7 +20,7 @@ interface RegisterData {
  
   {/* Function: register - Sends registration data to the backend API*/}
 
-export async function register({ username, email, password }: RegisterData) {
+export async function register({ username, email, password }: ApiData) {
   try {
     const response = await apiClient.post('/register', {
       username,
@@ -32,4 +32,43 @@ export async function register({ username, email, password }: RegisterData) {
     console.error("Registration Error:", err);
     throw err; 
   }
+}
+
+{/* Function: login - Sends login data to the backend API*/}
+
+export async function login({ email, password }: ApiData) {
+  try {
+    const response = await apiClient.post('/login', {
+      email,
+      password,
+    });
+    return response.data;
+  } catch (err) {
+    console.error("Login Error:", err);
+    throw err;
+  }
+}
+
+{/* Function: logout - Sends logout request to the backend API*/}
+
+export async function logout() {
+  try {
+    const response = await apiClient.post('/logout');
+    return response.data;
+  } catch (err) {
+    console.error("Logout Error:", err);
+    throw err;
+  }
+}
+
+{/* Function: getMe - Retrieves current user information */}
+
+export async function getMe() {
+  try {
+    const response = await apiClient.get('/get-user');
+    return response.data;
+  } catch (err) {
+    console.error("Get User Error:", err);
+    throw err;
+  } 
 }
