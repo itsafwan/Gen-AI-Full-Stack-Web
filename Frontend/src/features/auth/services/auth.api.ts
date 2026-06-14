@@ -1,5 +1,18 @@
 import axios from "axios"
 
+{/*Interface for registration data & login data */}
+
+interface RegisterData {
+  username: string;
+  email: string;
+  password: string;
+}
+
+interface LoginData {
+  email: string;
+  password: string;
+}
+
 {/*Auth API Service This service provides functions to interact with the authentication-related endpoints of the backend API.It uses Axios to make HTTP requests and handles user registration by sending data to the appropriate endpoint.*/}
 
   const apiClient = axios.create({
@@ -8,19 +21,10 @@ import axios from "axios"
   });
 
 
-  {/*Register API Service
-  This service handles the registration of new users by sending their data to the backend API.
-  It uses Axios to make HTTP POST requests to the registration endpoint. */}
-
-interface ApiData {
-  username: string;
-  email: string;
-  password: string;
-}
  
   {/* Function: register - Sends registration data to the backend API*/}
 
-export async function register({ username, email, password }: ApiData) {
+export async function Register({ username, email, password }: RegisterData) {
   try {
     const response = await apiClient.post('/register', {
       username,
@@ -36,7 +40,7 @@ export async function register({ username, email, password }: ApiData) {
 
 {/* Function: login - Sends login data to the backend API*/}
 
-export async function login({ email, password }: ApiData) {
+export async function Login({ email, password }: LoginData) {
   try {
     const response = await apiClient.post('/login', {
       email,
@@ -51,7 +55,7 @@ export async function login({ email, password }: ApiData) {
 
 {/* Function: logout - Sends logout request to the backend API*/}
 
-export async function logout() {
+export async function Logout() {
   try {
     const response = await apiClient.post('/logout');
     return response.data;
@@ -63,7 +67,7 @@ export async function logout() {
 
 {/* Function: getMe - Retrieves current user information */}
 
-export async function getMe() {
+export async function Getme() {
   try {
     const response = await apiClient.get('/get-user');
     return response.data;
