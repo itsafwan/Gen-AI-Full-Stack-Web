@@ -14,7 +14,6 @@ export async function authUser(req: Request, res: Response, next: NextFunction) 
   
   const authHeader = req.headers.authorization;
   const accessToken = authHeader && authHeader.split(" ")[1];
- 
 
   if (!accessToken) {
     return res.status(401).json({ message: "Access Token not provided" });

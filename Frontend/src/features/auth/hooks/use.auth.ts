@@ -1,7 +1,7 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
+import axios from "axios"; 
 import { AuthContext } from "../context";
-import { Login } from "../services";
-
+import { Login, Logout, Register } from "../services";
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
@@ -11,18 +11,60 @@ export const useAuth = () => {
   }
 
   const { user, setuser, loading, setloading } = context;
+  const [error, setError] = useState<string | null>(null);
+
+  const getErrorMessage = (err: unknown): string => {
+    if (axios.isAxiosError(err)) {
+      return err.response?.data?.message || "Something went wrong";
+    }
+    return "An unexpected error occurred";
+  };
 
   const handleLogin = async ({ email, password }: { email: string, password: string }) => {
   setloading(true);
+  setError(null);
   try {
     const data = await Login({ email, password });
-    setuser(data.user); 
-  } catch (error) {
-    console.error("Login Error:", error);
+    setuser(data.user);
+    return true; 
+  } catch (err) {
+    setError(getErrorMessage(err));
+    return false; 
   } finally {
-    setloading(false); 
+    setloading(false);
   }
 };
 
-  return { user, loading, handleLogin };
+  const handleRegister = async ({ username, email, password }: { username: string, email: string, password: string }) => {
+    setloading(true);
+    setError(null);
+    try {
+      const data = await Register({ username, email, password });
+      setuser(data.user);
+    } catch (err) {
+      setError(getErrorMessage(err));
+    } finally {
+      setloading(false);
+    }
+  };
+
+  const handleLogout = async () => {
+    setloading(true);
+    try {
+      await Logout();
+      setuser(null);
+      setError(null);
+    } catch (err) {
+      setError(getErrorMessage(err));
+    } finally {
+      setloading(false);
+    }
+  };
+
+
+   
+
+
+
+  return { user, loading, handleLogin, handleRegister, handleLogout, error };
 };

@@ -1,15 +1,27 @@
 import { useNavigate , Link} from "react-router-dom";
 import "../auth.from.scss"
+import { useState } from "react";
+import { useAuth } from "../hooks/use.auth";
 
  {/* Register Form */ }
 
 const Register = () => {
 
+  const { loading, handleRegister } = useAuth();
   const navigate = useNavigate();
+  const [username, setusername] = useState("")
+  const [email, setemail] = useState("")
+  const [password, setpassword] = useState("")
 
-   const handleSubmit = (e: React.SubmitEvent<HTMLFormElement>) => {
+   const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
   e.preventDefault();
+  await handleRegister ({username,email,password})
+  navigate('/')
   };
+
+  if(loading){
+    return <main><h1>Loading....</h1></main>
+  }
 
   return (
     <>
@@ -23,19 +35,19 @@ const Register = () => {
          {/* Username Input Field */}
         <div className="input-group">
           <label htmlFor="username">Username</label>
-          <input type="text" id="username" name="username" placeholder="Enter your username" />
+          <input onChange={(e)=>{setusername(e.target.value)}} type="text" id="username" name="username" placeholder="Enter your username" />
         </div>
 
         {/* Email Input Field */}
         <div className="input-group">
           <label htmlFor="email">Email</label>
-          <input type="email" id="email" name="email" placeholder="Enter your email" />
+          <input onChange={(e)=>{setemail(e.target.value)}} type="email" id="email" name="email" placeholder="Enter your email" />
         </div>
 
         {/* Password Input Field */}
         <div className="input-group">
           <label htmlFor="password">Password</label>
-          <input type="password" id="password" name="password" placeholder="Enter your password" />
+          <input onChange={(e)=>{setpassword(e.target.value)}} type="password" id="password" name="password" placeholder="Enter your password" />
         </div>
         
         {/* Submit Button */}

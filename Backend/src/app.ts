@@ -1,6 +1,7 @@
 import express, { type Application } from "express";
 import authRouter from "./routes/auth.routes.js";
 import cookieParser from "cookie-parser";
+import cors from "cors";
 
 /**
    * @name App Initialization
@@ -13,6 +14,10 @@ const app: Application = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true })); 
 app.use(cookieParser());
+app.use(cors({
+   origin: "http://localhost:5173", // Update this to match your frontend URL
+   credentials: true
+}))
 
 // using auth routes for authentication related endpoints
 app.use('/api/v1/auth',authRouter);

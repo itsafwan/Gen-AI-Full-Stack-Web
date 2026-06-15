@@ -1,49 +1,62 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "../auth.from.scss"
+import { useAuth } from "../hooks/use.auth";
+import { useState } from "react";
 
 
 {/* Login Form */}
 
 const Login = () => {
+  const { loading, handleLogin, error } = useAuth(); 
+  const navigate = useNavigate();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
- const handleSubmit = (e: React.SubmitEvent<HTMLFormElement>) => {
-  e.preventDefault();
-};
+  const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    
+    const success = await handleLogin({ email, password });
 
-  
+  if (success) {
+    navigate("/"); 
+  }
+  };
 
   return (
-    <>
-    {/* Main Content */}
     <main> 
-     <div className="form-container">
-      <h1>Login</h1>
-      {/* Form handling logic */}
-      <form onSubmit={handleSubmit}>
-
-        {/* Email Input Field */}
-        <div className="input-group">
-          <label htmlFor="email">Email</label>
-          <input type="email" id="email" name="email" placeholder="Enter your email" />
-        </div>
-
-        {/* Password Input Field */}
-        <div className="input-group">
-          <label htmlFor="password">Password</label>
-          <input type="password" id="password" name="password" placeholder="Enter your password" />
-        </div>
+      <div className="form-container">
+        <h1>Login</h1>
         
-        {/* Submit Button */}
-        <button type="submit" className="button primary-button">Login</button>
-      </form>
+        
+        {error && <p style={{ color: "red" }}>{error}</p>}
 
-          {/* Link to Register Page */}
+        <form onSubmit={handleSubmit}>
+          <div className="input-group">
+            <label htmlFor="email">Email</label>
+            <input 
+              value={email} 
+              onChange={(e) => setEmail(e.target.value)} 
+              type="email" id="email" required 
+            />
+          </div>
+
+          <div className="input-group">
+            <label htmlFor="password">Password</label>
+            <input 
+              value={password} 
+              onChange={(e) => setPassword(e.target.value)} 
+              type="password" id="password" required 
+            />
+          </div>
+          
+          <button type="submit" className="button primary-button" disabled={loading}>
+            {loading ? "Logging in..." : "Login"}
+          </button>
+        </form>
 
         <p>Don't have an account? <Link to="/register">Register</Link></p>
-     </div>
+      </div>
     </main>
-    </>
-  )
-}
-
+  );
+};
 export default Login
