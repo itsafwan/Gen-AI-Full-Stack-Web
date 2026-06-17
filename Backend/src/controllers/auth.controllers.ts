@@ -1,7 +1,7 @@
 import { type Request, type Response } from "express";
 import Usermodel from "../models/user.model.js";
 import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
+import jwt, { type JwtPayload } from "jsonwebtoken";
 import envConfig from "../config/dotenv.config.js";
 import TokenBlacklistModel from "../models/tokenblacklist.model.js";
 // import redisclient from "../utils/redisClient.js"; for docker practice only, uncomment if you have redis running locally or in docker
@@ -61,7 +61,7 @@ export const registerUser = async (req: Request, res: Response) => {
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
+      sameSite: "lax",
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 Days
     });
   
@@ -134,7 +134,7 @@ export const loginUser = async (req: Request, res: Response) => {
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
+      sameSite: "lax",
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 Days
     });
 
@@ -229,27 +229,39 @@ export const logoutUser = async (req: Request, res: Response) => {
 
 export const Getuser = async (req: Request, res: Response) => {
   try {
-    const userId = req.userId;  
+   
+    let userId = req.userId;
 
+    
     if (!userId) {
-      return res.status(401).json({ message: "Unauthorized" });
+      const refreshToken = req.cookies.refreshToken;
+      if (!refreshToken) {
+        return res.status(401).json({ message: "Unauthorized: No token or cookie" });
+      }
+
+      
+      const decoded = jwt.verify(refreshToken, envConfig.REFRESH_TOKEN_SECRET) as JwtPayload;
+      userId = decoded.id;
     }
 
     const user = await Usermodel.findById(userId);
+    if (!user) return res.status(404).json({ message: "User not found" });
 
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
+   
+    const newAccessToken = jwt.sign(
+      { id: user._id, username: user.username },
+      envConfig.ACCESS_TOKEN_SECRET,
+      { expiresIn: "15m" }
+    );
 
     res.status(200).json({
       message: "User details fetched successfully",
-      user: {
-        id: user._id,
-        username: user.username,
-        email: user.email,
-      },
+      accessToken: newAccessToken,
+      user: { id: user._id, username: user.username, email: user.email },
     });
   } catch (err) {
-    return res.status(500).json({ message: "Server error" });
+    return res.status(401).json({ message: "Session expired" });
   }
 };
+
+
