@@ -7,7 +7,7 @@ import { useAuth } from "../hooks/use.auth";
 
 const Register = () => {
 
-  const { loading, handleRegister } = useAuth();
+  const { loading, handleRegister,error } = useAuth();
   const navigate = useNavigate();
   const [username, setusername] = useState("")
   const [email, setemail] = useState("")
@@ -15,8 +15,8 @@ const Register = () => {
 
    const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
   e.preventDefault();
-  await handleRegister ({username,email,password})
-  navigate('/')
+  const success = await handleRegister ({username,email,password})
+  if(success) navigate('/')
   };
 
   if(loading){
@@ -50,6 +50,7 @@ const Register = () => {
           <input onChange={(e)=>{setpassword(e.target.value)}} type="password" id="password" name="password" placeholder="Enter your password" />
         </div>
         
+        {error && <p className="error">{error}</p>}
         {/* Submit Button */}
         <button type="submit" className="button primary-button">Register</button>
       </form>

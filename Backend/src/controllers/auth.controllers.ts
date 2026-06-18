@@ -14,12 +14,7 @@ import TokenBlacklistModel from "../models/tokenblacklist.model.js";
 
 export const registerUser = async (req: Request, res: Response) => {
   const { username, email, password } = req.body;
-
-  // Basic validation checks
-  if (!username || !email || !password) {
-    return res.status(400).json({ message: "All fields are required" });
-  }
-
+  
   try{
    const isUserAlreadyExists = await Usermodel.findOne({ 
       $or:[{ username },{ email }]

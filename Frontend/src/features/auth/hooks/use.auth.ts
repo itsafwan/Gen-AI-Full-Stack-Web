@@ -13,12 +13,15 @@ export const useAuth = () => {
   const { user, setuser, loading, setloading } = context;
   const [error, setError] = useState<string | null>(null);
 
-  const getErrorMessage = (err: unknown): string => {
-    if (axios.isAxiosError(err)) {
-      return err.response?.data?.message || "Something went wrong";
-    }
-    return "An unexpected error occurred";
-  };
+const getErrorMessage = (err: unknown): string => {
+  if (axios.isAxiosError(err)) {
+    return err.response?.data?.message || "Something went wrong";
+  }
+  if (err instanceof Error) {  
+    return err.message
+  }
+  return "An unexpected error occurred";
+};
 
   const handleLogin = async ({ email, password }: { email: string, password: string }) => {
   setloading(true);
@@ -41,8 +44,10 @@ export const useAuth = () => {
     try {
       const data = await Register({ username, email, password });
       setuser(data.user);
+      return true
     } catch (err) {
       setError(getErrorMessage(err));
+      return false 
     } finally {
       setloading(false);
     }

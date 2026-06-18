@@ -1,5 +1,6 @@
 import axios from "axios"
 import { clearAccessToken, getAccessToken, setAccessToken } from "./authStore";
+import { registerzodSchema } from "../shared/validators/auth.validator";
 
 {/*Interface for registration data & login data */}
 
@@ -33,6 +34,11 @@ interface LoginData {
   {/* Function: register - Sends registration data to the backend API*/}
 
 export async function Register({ username, email, password }: RegisterData) {
+   const result = registerzodSchema.safeParse({ username, email, password })
+  
+  if(!result.success) {
+    throw new Error(result.error.issues[0].message) // pehla error throw karo
+  }
   try {
     const response = await apiClient.post('/register', {
       username,
