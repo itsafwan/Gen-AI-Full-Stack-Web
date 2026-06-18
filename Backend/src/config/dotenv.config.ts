@@ -12,7 +12,8 @@ const requiredEnvVariables =[
   "PORT",
   "MONGO_URI",
   "REFRESH_TOKEN_SECRET",
-  "ACCESS_TOKEN_SECRET"
+  "ACCESS_TOKEN_SECRET",
+  "GOOGLE_GENAI_API_KEY"
 
 ];
 
@@ -27,6 +28,7 @@ const envConfig = {
   MONGO_URI: process.env.MONGO_URI || "",
   REFRESH_TOKEN_SECRET: process.env.REFRESH_TOKEN_SECRET || "",
   ACCESS_TOKEN_SECRET: process.env.ACCESS_TOKEN_SECRET || "",
+  GOOGLE_GENAI_API_KEY:process.env.GOOGLE_GENAI_API_KEY as string
 }
 
 export default envConfig;
