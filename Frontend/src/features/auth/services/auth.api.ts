@@ -30,6 +30,20 @@ interface LoginData {
   return config;
 });
 
+export const setupInterceptors = (setRateLimitTimer: (time: number | null) => void) => {
+  apiClient.interceptors.response.use(
+    (response) => response,
+    (error) => {
+      if(error.response?.status === 429) {
+        const resetTime = error.response.headers["ratelimit-reset"]
+        const countdown = (resetTime * 1000) - Date.now()
+        setRateLimitTimer(countdown)  
+      }
+      return Promise.reject(error)
+    }
+  )
+}
+
  
   {/* Function: register - Sends registration data to the backend API*/}
 

@@ -7,7 +7,7 @@ import { useState } from "react";
 {/* Login Form */}
 
 const Login = () => {
-  const { loading, handleLogin, error } = useAuth(); 
+  const { loading, handleLogin, error,rateLimitTimer } = useAuth(); 
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -29,6 +29,12 @@ const Login = () => {
         
         
         {error && <p style={{ color: "red" }}>{error}</p>}
+        
+        {rateLimitTimer && (
+        <p style={{ color: "orange" }}>
+         Try again in {Math.ceil(rateLimitTimer / 1000)} seconds
+        </p>
+          )}
 
         <form onSubmit={handleSubmit}>
           <div className="input-group">

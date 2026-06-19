@@ -10,7 +10,7 @@ export const useAuth = () => {
     throw new Error("useAuth must be used within an AuthProvider");
   }
 
-  const { user, setuser, loading, setloading } = context;
+  const { user, setuser, loading, setloading,rateLimitTimer,setRateLimitTimer } = context;
   const [error, setError] = useState<string | null>(null);
 
 const getErrorMessage = (err: unknown): string => {
@@ -71,5 +71,5 @@ const getErrorMessage = (err: unknown): string => {
 
 
 
-  return { user, loading, handleLogin, handleRegister, handleLogout, error };
+  return { user, loading, handleLogin, handleRegister, handleLogout, error,rateLimitTimer,setRateLimitTimer};
 };

@@ -12,6 +12,8 @@ interface AuthContextType {
   setuser: React.Dispatch<React.SetStateAction<User | null>>;
   loading: boolean;
   setloading: React.Dispatch<React.SetStateAction<boolean>>;
+  rateLimitTimer: number | null;
+  setRateLimitTimer: React.Dispatch<React.SetStateAction<number | null>>;
 }
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
