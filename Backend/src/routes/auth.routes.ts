@@ -2,7 +2,8 @@ import { Router } from "express";
 import * as authController from "../controllers/auth.controllers.js";
 import { authUser } from "../middlewares/auth.middleware.js";
 import { validate } from "../middlewares/validate.middleware.js";
-import { registerzodSchema } from "../validators/auth.validator.js";
+import { loginzodSchema, registerzodSchema } from "../validators/auth.validator.js";
+import { authLimiter } from "../middlewares/rateLimit.middleware.js";
 
 
 const authRouter = Router();
@@ -12,14 +13,14 @@ const authRouter = Router();
    * @description Authorization and authentication related routes for user registration, login, password reset, etc.
    * @access Public
 */
-authRouter.post("/register", validate(registerzodSchema),authController.registerUser);
+authRouter.post("/register", authLimiter, validate(registerzodSchema),authController.registerUser);
 
 /**
    * @routes POST /api/v1/auth/login
    * @description Handles user login logic, including credential verification and JWT token generation
    * @access Public
 */
-authRouter.post("/login", authController.loginUser);
+authRouter.post("/login", authLimiter, validate(loginzodSchema),authController.loginUser);
 
 /**
    * @routes POST /api/v1/auth/logout

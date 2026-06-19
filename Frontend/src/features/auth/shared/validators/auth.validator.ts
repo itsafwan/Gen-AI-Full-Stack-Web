@@ -7,3 +7,7 @@ export const registerzodSchema = z.object({
 })
 
 
+export const loginzodSchema = z.object({
+  email: z.email("Valid email daalo"),
+  password: z.string().min(8, "Password kam az kam 8 characters ka hona chahiye")
+})
