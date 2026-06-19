@@ -1,5 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import "../auth.from.scss"
+import "../auth.ratelimite.scss"
 import { useAuth } from "../hooks/use.auth";
 import { useState } from "react";
 
@@ -22,6 +23,18 @@ const Login = () => {
   }
   };
 
+   if (rateLimitTimer && rateLimitTimer > 0) {
+    return (
+      <main className="rate-limit-screen">
+        <div className="rate-limit-box">
+          <h1>Too Many Requests</h1>
+          <h2>{Math.ceil(rateLimitTimer / 1000)}</h2>
+          <p>Please wait...</p>
+        </div>
+      </main>
+    );
+  }
+
   return (
     <main> 
       <div className="form-container">
@@ -30,11 +43,6 @@ const Login = () => {
         
         {error && <p style={{ color: "red" }}>{error}</p>}
         
-        {rateLimitTimer && (
-        <p style={{ color: "orange" }}>
-         Try again in {Math.ceil(rateLimitTimer / 1000)} seconds
-        </p>
-          )}
 
         <form onSubmit={handleSubmit}>
           <div className="input-group">

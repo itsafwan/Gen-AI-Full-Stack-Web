@@ -1,0 +1,15 @@
+.rate-limit-screen {
+  position: fixed;
+  inset: 0;
+  backdrop-filter: blur(8px);
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.rate-limit-box {
+  padding: 2rem;
+  border-radius: 12px;
+  text-align: center;
+}
