@@ -66,10 +66,6 @@ const getErrorMessage = (err: unknown): string => {
     }
   };
 
-
-   
-
-
-
+  
   return { user, loading, handleLogin, handleRegister, handleLogout, error,rateLimitTimer,setRateLimitTimer};
 };

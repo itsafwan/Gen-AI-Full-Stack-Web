@@ -11,7 +11,6 @@ import ConnectionDB from "./src/config/config.db.js";
 
 
 
-
 ConnectionDB().then(async () => {
   // await redisclient.connect(); // for docker practice only, uncomment if you have redis running locally or in docker
   app.listen(envConfig.PORT, () => {

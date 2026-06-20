@@ -78,29 +78,12 @@ const preparation = new mongoose.Schema({
   _id:false
 })
 
-const Metadata = new mongoose.Schema({
-
-  // AI Metadata field 
-  aiMetadata: {
-    model: {
-      type: String, // e.g., "gpt-4o", "gemini-1.5-pro"
-      required: true
-    },
-    promptVersion: {
-      type: String, // e.g., "v1.2" (if you want to change your prompt)
-      default: "1.0"
-    },
-    processingTime: {
-      type: Number // milliseconds (for AI response time track )
-    },
-    tokensUsed: {
-      type: Number // Cost analysis 
-    }
-  },
-
-},{
-  _id:false
-})
+const MetadataSchema = new mongoose.Schema({
+  model: { type: String, required: true },
+  promptVersion: { type: String, default: "1.0" },
+  processingTime: Number,
+  tokensUsed: Number
+}, { _id: false });
 
 
 const interview = new mongoose.Schema({
@@ -125,7 +108,7 @@ const interview = new mongoose.Schema({
   behavioraltechnicalQuestion:[behaviroalquestion],
   skillgap:[skillgap],
   preparationplan:[preparation],
-  aiMetadata:[Metadata]
+  aiMetadata: MetadataSchema
 
 },{
   timestamps:true
