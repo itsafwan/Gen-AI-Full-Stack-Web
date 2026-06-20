@@ -104,7 +104,7 @@ const interview = new mongoose.Schema({
     max:100
   },
 
-  technicalQuestion:[technicalquestion],
+  technicalQuestions:[technicalquestion],
   behavioraltechnicalQuestion:[behaviroalquestion],
   skillgap:[skillgap],
   preparationplan:[preparation],
