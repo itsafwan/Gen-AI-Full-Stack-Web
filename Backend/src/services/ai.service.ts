@@ -2,7 +2,6 @@ import { GoogleGenAI } from "@google/genai";
 import envConfig from "../config/dotenv.config.js";
 import interviewmodel from "../models/interview.model.js";
 import {z} from "zod";
-import { zodToJsonSchema } from "zod-to-json-schema";
 
 interface InterviewInput {
   resume: string;
@@ -36,12 +35,71 @@ const interviewReportSchema = z.object({
   matchScore: z.number().min(0).max(100).describe("Resume to JD match score.")
 });
 
+
+const geminiSchema = {
+  type: "object",
+  properties: {
+    technicalQuestions: {
+      type: "array",
+      items: {
+        type: "object",
+        properties: {
+          question: { type: "string" },
+          intention: { type: "string" },
+          answer: { type: "string" },
+        },
+        required: ["question", "intention", "answer"],
+      },
+    },
+    behavioralQuestions: {
+      type: "array",
+      items: {
+        type: "object",
+        properties: {
+          question: { type: "string" },
+          intention: { type: "string" },
+          answer: { type: "string" },
+        },
+        required: ["question", "intention", "answer"],
+      },
+    },
+    skillGaps: {
+      type: "array",
+      items: {
+        type: "object",
+        properties: {
+          skill: { type: "string" },
+          severity: { type: "string", enum: ["low", "medium", "high"] },
+        },
+        required: ["skill", "severity"],
+      },
+    },
+    preparationPlan: {
+      type: "array",
+      items: {
+        type: "object",
+        properties: {
+          day: { type: "number" },
+          focus: { type: "string" },
+          task: { type: "array", items: { type: "string" } },
+        },
+        required: ["day", "focus", "task"],
+      },
+    },
+    matchScore: { type: "number" },
+  },
+  required: ["technicalQuestions", "behavioralQuestions", "skillGaps", "preparationPlan", "matchScore"],
+};
+
+
 const ai = new GoogleGenAI({
   apiKey:envConfig.GOOGLE_GENAI_API_KEY
 });
 
 
+
 export async function generateInterviewReport({ resume, selfDescription, jobDescription }: InterviewInput) {
+  console.log("Function entry point...");
   const startTime = Date.now();
 
   const prompt = `
@@ -53,23 +111,26 @@ export async function generateInterviewReport({ resume, selfDescription, jobDesc
     Generate technical interview questions that specifically target the gaps between the resume and the job description. 
     Follow the JSON schema strictly.
   `;
+  
+  console.log("2. Sending request to Gemini...");
 
   
-  const response = await ai.models.generateContent({
-    model: "gemini-1.5-flash",
+const response = await ai.models.generateContent({
+    model: "gemini-2.5-flash",   // ✅ tumhara model sahi rakha
     contents: prompt,
+    config: {
+      responseMimeType: "application/json",  // ✅ yeh wala kaam karta hai
+      responseSchema: geminiSchema,           // ✅ responseFormat nahi
+    },
   });
-
   
-  const rawText = response?.text; 
+  const rawText = response.text; 
+  
+  if (!rawText) {
+    throw new Error("Failed to get text from AI response");
+  }
 
-    if (!rawText) {
-     throw new Error("Failed to get text from AI response");
-    }
-
-    const parsedData = JSON.parse(rawText);
-
-    const validatedData = interviewReportSchema.parse(parsedData);
+  const validatedData = interviewReportSchema.parse(JSON.parse(rawText));
 
   const endTime = Date.now();
 
@@ -83,7 +144,7 @@ export async function generateInterviewReport({ resume, selfDescription, jobDesc
     skillgap: validatedData.skillGaps,
     preparationplan: validatedData.preparationPlan,
     aiMetadata: {
-      model: "gemini-1.5-flash",
+      model: "gemini-2.5-flash",
       processingTime: endTime - startTime,
     }
   });
