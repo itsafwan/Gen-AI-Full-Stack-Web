@@ -2,6 +2,9 @@ import app from "./src/app.js";
 import envConfig from "./src/config/dotenv.config.js";
 import ConnectionDB from "./src/config/config.db.js";
 // import redisclient from "./src/utils/redisClient.js"; for docker practice only, uncomment if you have redis running locally or in docker
+import {resume,selfDescription,jobDescription} from "./src/services/temp.js"
+import { generateInterveiwReport } from "./src/services/ai.service.js";
+
 
 /**
    * @name Server Initialization
@@ -10,6 +13,7 @@ import ConnectionDB from "./src/config/config.db.js";
 */
 
 
+generateInterveiwReport({resume,selfDescription,jobDescription})
 
 ConnectionDB().then(async () => {
   // await redisclient.connect(); // for docker practice only, uncomment if you have redis running locally or in docker
