@@ -1,5 +1,7 @@
 import { Router } from "express";
 import { authUser } from "../middlewares/auth.middleware.js";
+import { generateInterviewReport } from "../controllers/interview.controllers.js";
+import { upload } from "../middlewares/file.middleware.js";
 
 
 const interviewRouter = Router();
@@ -10,7 +12,8 @@ const interviewRouter = Router();
    * @access private
 */
 
-interviewRouter.post("",authUser)
+
+interviewRouter.post("",authUser,upload.single("resmue"),generateInterviewReport)
 
 
 export default interviewRouter
