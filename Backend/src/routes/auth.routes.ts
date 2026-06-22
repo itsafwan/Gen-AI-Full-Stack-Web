@@ -1,6 +1,6 @@
 import { Router } from "express";
 import * as authController from "../controllers/auth.controllers.js";
-import { authUser } from "../middlewares/auth.middleware.js";
+import  {authUser}  from "../middlewares/auth.middleware.js";
 import { validate } from "../middlewares/validate.middleware.js";
 import { loginzodSchema, registerzodSchema } from "../validators/auth.validator.js";
 import { authLimiter } from "../middlewares/rateLimit.middleware.js";
