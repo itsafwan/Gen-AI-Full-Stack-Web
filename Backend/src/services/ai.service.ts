@@ -67,20 +67,15 @@ IMPORTANT RULES:
       responseSchema:zodToJsonSchema(interviewReportSchema),  
     }});
 
-  console.log("RAW RESPONSE:");
-  console.log(response.text);
+    
+  const rawText = response.text;
 
-  if (!response.text) {
-    throw new Error("No response text received");
-  }
+  if (!rawText) {
+  throw new Error("No response text received from AI");
+ }
 
-  const report = interviewReportSchema.parse(
-    JSON.parse(response.text)
-  );
-
-  console.log("VALIDATED RESPONSE:");
-  console.dir(report, { depth: null });
-
+  const report = interviewReportSchema.parse(JSON.parse(rawText));
+  
   return report;
  
 }

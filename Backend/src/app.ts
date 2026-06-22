@@ -2,6 +2,7 @@ import express, { type Application } from "express";
 import authRouter from "./routes/auth.routes.js";
 import cookieParser from "cookie-parser";
 import cors from "cors";
+import interviewRouter from "./routes/interview.routes.js";
 
 /**
    * @name App Initialization
@@ -21,5 +22,6 @@ app.use(cors({
 
 // using auth routes for authentication related endpoints
 app.use('/api/v1/auth',authRouter);
+app.use('/api/v1/interview',interviewRouter)
 
 export default app;
