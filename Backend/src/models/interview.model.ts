@@ -108,8 +108,11 @@ const interview = new mongoose.Schema({
   behavioraltechnicalQuestion:[behaviroalquestion],
   skillgap:[skillgap],
   preparationplan:[preparation],
-  aiMetadata: MetadataSchema
-
+  aiMetadata: MetadataSchema,
+  user:{
+    type:mongoose.Schema.Types.ObjectId,
+    ref:"users"
+  }
 },{
   timestamps:true
 })

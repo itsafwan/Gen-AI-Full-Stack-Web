@@ -13,7 +13,7 @@ const interviewReportSchema = z.object({
   technicalQuestions: z.array(z.object({
   question: z.string().describe("A challenging technical question relevant to the job description."),
   intention: z.string().describe("Explain what skill or trait the interviewer is testing for with this question."),
-  answer: z.string().describe("True if answer is a generated sample because candidate experience was unavailable."),
+  answer: z.string().describe("Provide a technical answer. If the candidate lacks direct experience for this question, write 'Sample Answer:' followed by a realistic hypothetical solution."),
   })).describe("A list of likely technical interview questions that may be asked for this role, including the interviewer's intention and an ideal answer."),
 
   behavioralQuestions: z.array(z.object({
@@ -44,7 +44,7 @@ export async function generateInterveiwReport({resume, selfDescription, jobDescr
     const Prompt = `
  You are an expert technical interviewer.
 
-Analyze the candidate profile and job description.
+  Analyze the candidate profile and job description.
 
 IMPORTANT RULES:
 
@@ -54,6 +54,7 @@ IMPORTANT RULES:
 - If experience is missing, generate a "Sample Answer" and clearly start the answer with "Sample Answer:".
 - Do not create fake STAR stories.
 - Be conservative when assigning matchScore.
+- If the candidate's experience is insufficient for a technical question, focus the 'Sample Answer' on how a professional would approach solving that specific problem, demonstrating depth of knowledge rather than personal experience.
 
     Resume: ${resume}
     Self Description:${selfDescription}
