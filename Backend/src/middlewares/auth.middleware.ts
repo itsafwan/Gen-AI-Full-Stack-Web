@@ -11,31 +11,33 @@ import TokenBlacklistModel from "../models/tokenblacklist.model.js";
 
 
 export async function authUser(req: Request, res: Response, next: NextFunction) {
-  
   const authHeader = req.headers.authorization;
   const accessToken = authHeader && authHeader.split(" ")[1];
 
-  
   if (!accessToken) {
     const refreshToken = req.cookies.refreshToken;
     if (!refreshToken) {
-      return res.status(401).json({ message: "Access Token not provided" });
+      return res.status(401).json({ message: "User Access declined" });
     }
-    
-    return next();
+
+    try {
+      const decoded = JWT.verify(refreshToken, envConfig.REFRESH_TOKEN_SECRET) as JwtPayload & { id: string };
+      req.userId = decoded.id;
+      return next();
+    } catch (err) {
+      return res.status(401).json({ message: "Invalid refresh token" });
+    }
   }
 
   try {
     const isBlacklisted = await TokenBlacklistModel.findOne({ token: accessToken });
-    
     if (isBlacklisted) {
       return res.status(401).json({ message: "Token is blacklisted, please login again" });
     }
 
     const decoded = JWT.verify(accessToken, envConfig.ACCESS_TOKEN_SECRET) as JwtPayload & { id: string };
-    req.userId = decoded.id;  
+    req.userId = decoded.id;
     return next();
-
   } catch (err) {
     return res.status(401).json({ message: "Invalid or expired token" });
   }

@@ -16,18 +16,18 @@ const interviewReportSchema = z.object({
   answer: z.string().describe("Provide a technical answer. If the candidate lacks direct experience for this question, write 'Sample Answer:' followed by a realistic hypothetical solution."),
   })).describe("A list of likely technical interview questions that may be asked for this role, including the interviewer's intention and an ideal answer."),
 
-  behavioralQuestions: z.array(z.object({
+  behavioraltechnicalQuestion: z.array(z.object({
   question: z.string().describe("A behavioral interview question designed to evaluate communication, teamwork, leadership, adaptability, conflict resolution, ownership, or cultural fit."),
   intention: z.string().describe("Explain what personality trait, soft skill, or workplace behavior the interviewer is trying to assess."),
   answer: z.string().describe("Provide a professional answer using the STAR method. The answer should demonstrate clear communication, ownership, impact, and lessons learned."),
   })).describe("A list of behavioral interview questions along with the interviewer's intention and sample high-quality answers."),
 
-  skillGaps: z.array(z.object({
+  skillgap: z.array(z.object({
   skill: z.string().describe("A skill, technology, concept, or experience required by the job description that is missing or weak in the candidate's profile."),
   severity: z.enum(["low", "medium", "high"]).describe("Indicates how critical this skill gap is for succeeding in the target role."),
   })).describe("A list of identified skill gaps between the candidate's resume and the job requirements, including their importance and recommendations for improvement."),
 
-  preparationPlan: z.array(z.object({
+  preparationplan: z.array(z.object({
   day: z.number().describe("The day is the preparation plan, starting from 1."),
   focus: z.string().describe("The primary topic or objective for the day, such as JavaScript, React, System Design, DSA, Behavioral Preparation, or Mock Interviews."),
   task: z.array(z.string()).describe("A detailed list of actionable tasks, exercises, study activities, or practice sessions to complete on that day."),
@@ -41,24 +41,26 @@ const ai = new GoogleGenAI({
 
 export async function generateInterveiwReport({resume, selfDescription, jobDescription}:InterviewInput) {
 
-    const Prompt = `
- You are an expert technical interviewer.
+  const Prompt = `
 
-  Analyze the candidate profile and job description.
+You are an expert technical interviewer.
 
-IMPORTANT RULES:
+Analyze the candidate profile and job description.
 
-- Use ONLY information present in the resume and self-description.
-- Never invent previous jobs, companies, teams, clients, production systems, audits, or work experience.
-- Never assume the candidate has worked professionally unless explicitly stated.
-- If experience is missing, generate a "Sample Answer" and clearly start the answer with "Sample Answer:".
-- Do not create fake STAR stories.
-- Be conservative when assigning matchScore.
-- If the candidate's experience is insufficient for a technical question, focus the 'Sample Answer' on how a professional would approach solving that specific problem, demonstrating depth of knowledge rather than personal experience.
+  IMPORTANT RULES:
+- IMPORTANT: You MUST generate at least 3 items for technicalQuestions, behavioralQuestions, and skillGaps.
+- IMPORTANT: You MUST generate a 7-day preparationPlan.
+- You MUST fill ALL fields. NEVER return an empty array [].
 
-    Resume: ${resume}
-    Self Description:${selfDescription}
-    Job Description: ${jobDescription}`
+- Use information present in the resume/self-description as a base.
+- If specific experience is missing, provide a "Sample Answer" that explains how a Senior Developer would approach the problem theoretically.
+- You are allowed to generate professional and realistic mock scenarios for Behavioral questions (STAR format) to help the candidate practice, even if they haven't explicitly stated that experience.
+- Be conservative with matchScore.
+
+Resume: ${resume}
+Self Description: ${selfDescription}
+Job Description: ${jobDescription}
+`;
   
   const response = await ai.models.generateContent({
     model:"gemini-2.5-flash",
@@ -75,9 +77,14 @@ IMPORTANT RULES:
   throw new Error("No response text received from AI");
  }
 
-  const report = interviewReportSchema.parse(JSON.parse(rawText));
   
-  return report;
+  const result = interviewReportSchema.safeParse(JSON.parse(rawText));
+
+  if (!result.success) {
+  throw new Error("Failed to generate valid interview report structure");
+  }
+
+  return result.data; 
  
 }
 
