@@ -32,7 +32,7 @@ const interviewReportSchema = z.object({
   focus: z.string().describe("The primary topic or objective for the day, such as JavaScript, React, System Design, DSA, Behavioral Preparation, or Mock Interviews."),
   task: z.array(z.string()).describe("A detailed list of actionable tasks, exercises, study activities, or practice sessions to complete on that day."),
   })).describe("A structured day-by-day interview preparation roadmap designed to close skill gaps, strengthen strengths, and maximize interview performance."),
-  tittle:z.string().describe("The title of the job for which the interview report is generated"),
+  title: z.string().describe("The title of the job for which the interview report is generated"),
   matchscore: z.number().min(0).max(100).describe("A score between 0 to 100 indicating how candidate's profile matches the job decription.")
 });
 

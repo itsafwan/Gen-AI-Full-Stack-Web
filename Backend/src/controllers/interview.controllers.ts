@@ -34,7 +34,8 @@ export async function generateInterviewReportcontroller(req: Request, res: Respo
       resume: resumeText,
       selfDescription,
       jobDescription,
-      ...interviewReportByAi
+      ...interviewReportByAi,
+      title: interviewReportByAi.title
     });
     
     return res.status(201).json({

@@ -13,7 +13,7 @@ const interviewRouter = Router();
 */
 
 
-interviewRouter.post("/generate",authUser,upload.single("resmue"),generateInterviewReportcontroller)
+interviewRouter.post("/generate", authUser, upload.single("resume"), generateInterviewReportcontroller)
 
 
 /**
