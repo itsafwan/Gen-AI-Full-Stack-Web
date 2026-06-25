@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { authUser } from "../middlewares/auth.middleware.js";
-import { generateInterviewReportcontroller, getinterviewReportByIdController } from "../controllers/interview.controllers.js";
+import { generateInterviewReportcontroller, getallinterviewReportsController, getinterviewReportByIdController } from "../controllers/interview.controllers.js";
 import { upload } from "../middlewares/file.middleware.js";
 
 
@@ -22,7 +22,15 @@ interviewRouter.post("/generate",authUser,upload.single("resmue"),generateInterv
    * @access private
 */
 
-interviewRouter.get("/report/:interviewId",authUser,upload.single("resmue"),getinterviewReportByIdController)
+interviewRouter.get("/report/:interviewId",authUser,getinterviewReportByIdController)
+
+/**
+   * @routes Get /api/v1/auth/ all routes related to gemini ai will be prefixed with /api/v1/interview
+   * @description get all interview reports of logged in user
+   * @access private
+*/
+
+interviewRouter.get("/",authUser,getallinterviewReportsController)
 
 
 export default interviewRouter
