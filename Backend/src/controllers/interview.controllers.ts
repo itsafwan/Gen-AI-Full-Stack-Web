@@ -51,3 +51,23 @@ export async function generateInterviewReportcontroller(req: Request, res: Respo
     });
   }
 }
+
+export async function getinterviewReportByIdController(req: Request, res: Response){
+
+  const {interviewId} = req.params
+
+  const interviewReport = await interviewmodel.findById({_id:interviewId, user:req.userId})
+
+  if(!interviewReport){
+    return res.status(404).json({
+      message:"Interview report not found"
+    })
+  }  
+
+  res.status(200).json({
+    success:true,
+    message:"Interview report fetched successfully",
+    interviewReport
+  })
+
+}

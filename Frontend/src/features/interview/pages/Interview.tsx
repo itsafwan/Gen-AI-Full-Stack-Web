@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import '../style/interview.scss'
 
-// ── Dummy Data ────────────────────────────────────────────────────────────────
+
 const DUMMY_REPORT = {
     matchScore: 88,
     technicalQuestions: [
@@ -141,7 +141,7 @@ const NAV_ITEMS = [
     },
 ]
 
-// ── Sub-components ─────────────────────────────────────────────────────────────
+
 const QuestionCard = ({ item, index }: { item: typeof DUMMY_REPORT.technicalQuestions[0], index: number }) => {
     const [open, setOpen] = useState(false)
     return (
@@ -188,7 +188,7 @@ const RoadMapDay = ({ day }: { day: typeof DUMMY_REPORT.preparationPlan[0] }) =>
     </div>
 )
 
-// ── Main Component ─────────────────────────────────────────────────────────────
+
 const Interview = () => {
     const [activeNav, setActiveNav] = useState('technical')
     const report = DUMMY_REPORT
