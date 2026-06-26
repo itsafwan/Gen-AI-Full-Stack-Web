@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { authUser } from "../middlewares/auth.middleware.js";
-import { generateInterviewReportcontroller, getallinterviewReportsController, getinterviewReportByIdController } from "../controllers/interview.controllers.js";
+import { generateInterviewReportcontroller, generateResumePdfController, getallinterviewReportsController, getinterviewReportByIdController } from "../controllers/interview.controllers.js";
 import { upload } from "../middlewares/file.middleware.js";
 
 
@@ -31,6 +31,10 @@ interviewRouter.get("/report/:interviewId",authUser,getinterviewReportByIdContro
 */
 
 interviewRouter.get("/",authUser,getallinterviewReportsController)
+
+
+interviewRouter.post("/resume/pdf/:interviewReportId",authUser,generateResumePdfController)
+
 
 
 export default interviewRouter

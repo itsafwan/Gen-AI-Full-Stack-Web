@@ -1,6 +1,6 @@
 import { type Request, type Response } from "express";
 import pdfParse from "pdf-parse-fork";  
-import { generateInterveiwReport } from "../services/ai.service.js";
+import { generateInterveiwReport,generateResmuePdf } from "../services/ai.service.js";
 import interviewmodel from "../models/interview.model.js";
 import { Types } from "mongoose";
 
@@ -101,25 +101,31 @@ export async function getallinterviewReportsController(req: Request, res: Respon
   });
 }
 
-// export async function generateResumePdfController(req: Request, res: Response) {
-//     const { interviewReportId } = req.params
+export async function generateResumePdfController(req: Request, res: Response) {
+    const { interviewReportId } = req.params
 
-//     const interviewReport = await interviewmodel.findById(interviewReportId)
+    const interviewReport = await interviewmodel.findById(interviewReportId)
 
-//     if (!interviewReport) {
-//         return res.status(404).json({
-//             message: "Interview report not found."
-//         })
-//     }
+    if (!interviewReport) {
+        return res.status(404).json({
+            message: "Interview report not found."
+        })
+    }
 
-//     const { resume, jobDescription, selfDescription } = interviewReport
+    const { resume, jobDescription, selfDescription } = interviewReport
 
-//     const pdfBuffer = await generateResumePdf({ resume, jobDescription, selfDescription })
+    if (!resume || !jobDescription || !selfDescription) {
+    return res.status(400).json({
+        message: "Interview report is incomplete. Required fields are missing."
+    })
+}
 
-//     res.set({
-//         "Content-Type": "application/pdf",
-//         "Content-Disposition": `attachment; filename=resume_${interviewReportId}.pdf`
-//     })
+    const pdfBuffer = await generateResmuePdf({ resume, jobDescription, selfDescription })
 
-//     res.send(pdfBuffer)
-// }
+    res.set({
+        "Content-Type": "application/pdf",
+        "Content-Disposition": `attachment; filename=resume_${interviewReportId}.pdf`
+    })
+
+    res.send(pdfBuffer)
+}
