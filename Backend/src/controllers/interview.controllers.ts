@@ -120,12 +120,12 @@ export async function generateResumePdfController(req: Request, res: Response) {
     })
 }
 
-    const pdfBuffer = await generateResmuePdf({ resume, jobDescription, selfDescription })
+  const pdfBuffer = await generateResmuePdf({ resume, jobDescription, selfDescription })
 
-    res.set({
+  res.set({
         "Content-Type": "application/pdf",
         "Content-Disposition": `attachment; filename=resume_${interviewReportId}.pdf`
-    })
+  })
 
     res.send(pdfBuffer)
 }
